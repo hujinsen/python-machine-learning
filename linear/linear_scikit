@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 16 23:22:02 2018
+
+@author: JSen
+"""
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy import loadtxt
+import os
+from sklearn import linear_model
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import RobustScaler
+
+os.chdir('/Users/JSen/Documents/linear/')
+
+data = loadtxt('ex1data2.txt', delimiter=',', dtype='float64')
+
+X = data[:, :-1]
+#最后一列为label
+y = data[:, -1:]
+
+scaler = StandardScaler()
+scaler.fit(X)
+X = scaler.transform(X)
+
+r_scaler = RobustScaler()
+r_scaler.fit(X)
+X = r_scaler.transform(X)
+
+def plot_after_feature_normalization(X):
+    plt.scatter(X[:,0], X[:,1])
+    plt.show()
+
+plot_after_feature_normalization(X)
+
+X_test = scaler.transform(np.array([[1650,3]],dtype='float64'))
+
+model = linear_model.LinearRegression()
+model.fit(X, y)
+
+result = model.predict(X_test)
+print(model.coef_)       # Coefficient of the features 决策函数中的特征系数
+print(model.intercept_)  # 又名bias偏置,若设置为False，则为0
+print(result[0][0])         # 预测结果
